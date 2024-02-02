@@ -1,0 +1,5 @@
+﻿  main.cpp
+C:\Users\fused\Desktop\OS\2\OS2\main.cpp(31,55): warning C4312: 'type cast': conversion from 'UINT' to 'HANDLE' of greater size
+C:\Users\fused\Desktop\OS\2\OS2\main.cpp(62,26): warning C4311: 'type cast': pointer truncation from 'HINSTANCE' to 'UINT'
+C:\Users\fused\Desktop\OS\2\OS2\main.cpp(62,26): warning C4302: 'type cast': truncation from 'HINSTANCE' to 'UINT'
+  OS2.vcxproj -> C:\Users\fused\Desktop\OS\2\OS2\x64\Debug\OS2.exe

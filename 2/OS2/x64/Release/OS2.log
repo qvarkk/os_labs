@@ -1,0 +1,4 @@
+﻿  main.cpp
+main.obj : error LNK2001: unresolved external symbol "void __cdecl DoCreateProcess(void)" (?DoCreateProcess@@YAXXZ)
+main.obj : error LNK2001: unresolved external symbol "void __cdecl DoShellExecute(void)" (?DoShellExecute@@YAXXZ)
+C:\Users\fused\Desktop\OS\2\OS2\x64\Release\OS2.exe : fatal error LNK1120: 2 unresolved externals
