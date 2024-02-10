@@ -2,40 +2,18 @@
 #include <iostream>
 #include <string>
 
-void DoWinExec();
-void DoShellExecute();
-void DoCreateProcess();
+int DoCreateProcess();
 
 int main(int argc, char** argv) {
-	if (argc != 2) {
-		std::cout << "Wrong number of parameters!" << std::endl;
-		return -1;
-	}
-
-	std::string param = argv[1];
-	if (param == "WinExec") {
-		DoWinExec();
-	} else if (param == "ShellExecute") {
-		DoShellExecute();
-	} else if (param == "CreateProcess") {
-		DoCreateProcess();
-	} else {
-		std::cout << "Wrong Argument!" << std::endl;
-		return -2;
+	if (!DoCreateProcess()) {
+		std::cout << "Was unable to create process" << std::endl;
+		return 1;
 	}
 
 	return 0;
 }
 
-void DoWinExec() {
-	WinExec("notepad.exe", SW_SHOW);
-}
-
-void DoShellExecute() {
-	ShellExecute(NULL, L"open", L"notepad.exe", NULL, NULL, SW_SHOW);
-}
-
-void DoCreateProcess() {
+int DoCreateProcess() {
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
@@ -47,14 +25,50 @@ void DoCreateProcess() {
 
 	BOOL b = NULL;
 	b = CreateProcessW(NULL, lpwCmdlLine, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
-	GetProcessId(pi.hProcess);
-	GetThreadId(pi.hThread);
 
-	std::cout << GetProcessId(pi.hProcess) << std::endl;
-	std::cout << GetThreadId(pi.hThread) << std::endl;
+	if (b) {
+		std::cout << "Process created" << std::endl;
+		std::cout << "Process Id: " << GetProcessId(pi.hProcess) << std::endl;
 
-	WaitForSingleObject(pi.hProcess, INFINITE);
+		HANDLE processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pi.dwProcessId);
 
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
+		std::cout << "Process handle opened" << std::endl;
+
+		FILETIME creationTime, exitTime, kernelTime, userTime;
+		SYSTEMTIME sCreationTime, sExitTime, sKernelTime, sUserTime;
+
+		GetProcessTimes(processHandle, &creationTime, &exitTime, &kernelTime, &userTime);
+
+		std::cout << "Got process times (1/4)" << std::endl;
+
+		FileTimeToSystemTime(&creationTime, &sCreationTime);
+
+		std::cout << "Creation time: " << sCreationTime.wHour << ":" << sCreationTime.wMinute << ":" << sCreationTime.wSecond << std::endl;
+		std::cout << "Close notepad when ready" << std::endl;
+
+		WaitForSingleObject(processHandle, INFINITE);
+
+		GetProcessTimes(processHandle, &creationTime, &exitTime, &kernelTime, &userTime);
+
+		std::cout << "Got process times (4/4)" << std::endl;
+
+		FileTimeToSystemTime(&exitTime, &sExitTime);
+
+		std::cout << "Exit time: " << sExitTime.wHour << ":" << sExitTime.wMinute << ":" << sExitTime.wSecond << std::endl;
+		std::cout << "Kernel time: " << kernelTime.dwLowDateTime / 100000.0 << " crocodiles" << std::endl;
+		std::cout << "User time: " << userTime.dwLowDateTime / 100000.0 << " crocodiles" << std::endl;
+
+		std::cout << "Press any key to terminate process and continue..." << std::endl;
+
+		system("pause > nul");
+
+		TerminateProcess(processHandle, 1);
+		CloseHandle(processHandle);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	} else {
+		return 0;
+	}
+
+	return 1;
 }
