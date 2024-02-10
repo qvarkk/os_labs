@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Users\qvarkk\Desktop\os_labs\3\OS3\OS3\main.cpp(19,27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\qvarkk\Desktop\os_labs\3\OS3\OS3\main.cpp(19,17): warning C4244: 'initializing': conversion from 'double' to 'const int', possible loss of data
+  OS3.vcxproj -> C:\Users\qvarkk\Desktop\os_labs\3\OS3\x64\Debug\OS3.exe
